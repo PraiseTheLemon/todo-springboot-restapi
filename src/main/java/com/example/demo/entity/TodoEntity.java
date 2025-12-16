@@ -15,4 +15,7 @@ public class TodoEntity {
     protected int id;
 
     protected String description;
+
+    protected String password = "....";
+
 }

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.TodoDTO;
 import com.example.demo.entity.TodoEntity;
 import com.example.demo.repository.TodoRepository;
 import jakarta.annotation.PostConstruct;
@@ -33,6 +34,16 @@ public class TodoService {
         }
     }
 
+    // MapStruct can be used for complex mappings, or Orika
+    public TodoDTO toDto(TodoEntity src) {
+        return new TodoDTO(src.getId(), src.getDescription());
+    }
+
+    public List<TodoDTO> toDtos(List<TodoEntity> src) {
+        return src.stream().map(this::toDto).toList();
+    }
+
+
     public TodoEntity saveTodo(String description) {
          TodoEntity e = new TodoEntity();
          e.setDescription(description);
@@ -43,23 +54,28 @@ public class TodoService {
         return repository.findAll();
     }
 
-    public List<TodoEntity> getAll() {
-        return repository.findAll();
+    public List<TodoDTO> getAllDTOs() {
+        return toDtos(repository.findAll());
     }
 
     public TodoEntity getById(int id) {
         return repository.findById(id).orElse(null);
     }
-
-    public TodoEntity createTodo(TodoEntity src) {
-        TodoEntity res = new TodoEntity();
-        res.setDescription(src.getDescription());
-        return repository.save(res);
+    public TodoDTO getDtoById(int id) {
+        val entity = getById(id);
+        return entity != null ? toDto(entity) : null;
     }
 
-    public TodoEntity updateTodo(TodoEntity src) {
-        val entity = repository.findById(src.getId()).orElseThrow();
-        entity.setDescription(src.getDescription());
-        return entity;
+    public TodoDTO createTodo(TodoDTO src) {
+        TodoEntity entity = new TodoEntity();
+        entity.setDescription(src.descr);
+        entity = repository.save(entity);
+        return toDto(entity);
+    }
+
+    public TodoDTO updateTodo(TodoDTO src) {
+        val entity = repository.findById(src.id).orElseThrow();
+        entity.setDescription(src.descr);
+        return toDto(entity);
     }
 }

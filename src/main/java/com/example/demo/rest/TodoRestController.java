@@ -1,6 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.entity.TodoEntity;
+import com.example.demo.dto.TodoDTO;
 import com.example.demo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,14 +19,14 @@ public class TodoRestController {
 
     // READ - Get all todos
     @GetMapping
-    public List<TodoEntity> getAll() {
-        return delegate.getAll();
+    public List<TodoDTO> getAll() {
+        return delegate.getAllDTOs();
     }
 
     // READ - Get todo by ID
     @GetMapping("/{id}")
-    public ResponseEntity<TodoEntity> getById(@PathVariable int id) {
-        TodoEntity todo = delegate.getById(id);
+    public ResponseEntity<TodoDTO> getById(@PathVariable int id) {
+        TodoDTO todo = delegate.getDtoById(id);
         if (todo == null) {
             return ResponseEntity.notFound().build();
         }
@@ -36,7 +35,7 @@ public class TodoRestController {
 
     // CREATE - Add new todo
     @PostMapping
-    public ResponseEntity<TodoEntity> create(@RequestBody TodoEntity todo) {
+    public ResponseEntity<TodoDTO> create(@RequestBody TodoDTO todo) {
         if (todo == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -46,7 +45,7 @@ public class TodoRestController {
 
     // UPDATE - Update existing todo
     @PutMapping()
-    public ResponseEntity<TodoEntity> update(@RequestBody TodoEntity updatedTodo) {
+    public ResponseEntity<TodoDTO> update(@RequestBody TodoDTO updatedTodo) {
         if (updatedTodo == null) {
             return ResponseEntity.badRequest().build();
         }
